@@ -22,7 +22,7 @@ def login():
             if user.verify_password(password):
                 login_user(user)
                 flash('Inicio de sesión exitoso.', 'success')
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('dashboard.dashboard'))
             else:
                 flash('Contraseña incorrecta.', 'danger')
         else:
@@ -31,6 +31,7 @@ def login():
     return render_template('auth/login.html')
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     try:
         # Verificar si ya existe el admin
@@ -49,3 +50,9 @@ def register():
         flash(f'Error creando usuario: {str(e)}', 'danger')
     
     return redirect(url_for('auth.login'))  # Redirige al login
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))

@@ -1,8 +1,9 @@
 from datetime import datetime
 from mongoengine import Document, fields
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin  # Importa UserMixin para simplificar la implementación
 
-class User(Document):
+class User(Document, UserMixin):  # Hereda de UserMixin
     username = fields.StringField(required=True, unique=True)
     email = fields.EmailField(required=True, unique=True)
     password_hash = fields.StringField(required=True)
@@ -11,10 +12,13 @@ class User(Document):
     created_at = fields.DateTimeField(default=datetime.utcnow)
 
     def set_password(self, password):
+        """
+        Genera un hash de la contraseña proporcionada y lo almacena en el campo password_hash.
+        :param password: Contraseña en texto plano.
+        """
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        print("se asede a verify password")
         """
         Verifica si la contraseña proporcionada coincide con el hash almacenado.
         :param password: Contraseña en texto plano.
@@ -24,15 +28,22 @@ class User(Document):
 
     @classmethod
     def get_user_by_email(cls, email):
-        print("revisando usuario")
+        """
+        Busca un usuario por su dirección de correo electrónico.
+        :param email: Dirección de correo electrónico del usuario.
+        :return: Instancia del usuario encontrado o None si no existe.
+        """
         return cls.objects(email=email).first()
-    
+
     @property
     def is_active(self):
         """
         Flask-Login requiere este atributo para verificar si la cuenta está activa.
         """
         return self.active
-    
+
     def get_id(self):
-        return str(self.id)
+        """
+        Flask-Login requiere este método para obtener el ID único del usuario.
+        """
+        return str(self.id)  # Asegúrate de que el ID sea una cadena

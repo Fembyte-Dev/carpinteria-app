@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- El contenido de cada página irá aquí -->
+<h2 class="page-title">Dashboard</h2>
+        
+<!-- Widget examples -->
+<div class="dashboard-widgets">
+    <div class="widget">
+        <i class="fas fa-users widget-icon"></i>
+        <div class="widget-title">Total Clientes</div>
+        <div class="widget-value">24</div>
+        <div class="widget-footer">
+            <i class="fas fa-arrow-up"></i> 3 nuevos este mes
+        </div>
+    </div>
+    <div class="widget">
+        <i class="fas fa-project-diagram widget-icon"></i>
+        <div class="widget-title">Proyectos Activos</div>
+        <div class="widget-value">8</div>
+        <div class="widget-footer">
+            <i class="fas fa-clock"></i> 2 por entregar esta semana
+        </div>
+    </div>
+    <div class="widget">
+        <i class="fas fa-money-bill-wave widget-icon"></i>
+        <div class="widget-title">Ingresos del Mes</div>
+        <div class="widget-value">$45,280</div>
+        <div class="widget-footer">
+            <i class="fas fa-arrow-up"></i> 12% vs. mes anterior
+        </div>
+    </div>
+    <div class="widget">
+        <i class="fas fa-chart-pie widget-icon"></i>
+        <div class="widget-title">Ganancia Mensual</div>
+        <div class="widget-value">$18,350</div>
+        <div class="widget-footer">
+            <i class="fas fa-arrow-down"></i> 5% vs. mes anterior
+        </div>
+    </div>
+</div>
+
+<!-- Card example -->
+<div class="card">
+    <div class="card-header">
+        Proyectos Recientes
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Proyecto</th>
+                        <th>Presupuesto</th>
+                        <th>Fecha Entrega</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Juan Pérez</td>
+                        <td>Comedor Roble</td>
+                        <td>$12,500</td>
+                        <td>15/03/2025</td>
+                        <td><span class="badge badge-success">Completado</span></td>
+                        <td>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>María Gómez</td>
+                        <td>Closet Principal</td>
+                        <td>$28,750</td>
+                        <td>20/03/2025</td>
+                        <td><span class="badge badge-warning">En Progreso</span></td>
+                        <td>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Carlos Rodríguez</td>
+                        <td>Escritorio Caoba</td>
+                        <td>$8,900</td>
+                        <td>10/03/2025</td>
+                        <td><span class="badge badge-danger">Atrasado</span></td>
+                        <td>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
