@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Administración de Carpintería</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth/login.css') }}">
+
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <!-- por el momento no contamos con logo. 
+            <div class="login-logo">
+                <img src="" alt="Logo Carpintería">
+                <h1 class="login-title">Sistema de Carpintería</h1>
+            </div>
+            -->
+            <p class="login-subtitle">Sistema de Carpinteria</p>
+        </div>
+
+        <div class="login-body">
+            <!-- Alerta de error (oculta por defecto) -->
+            <div class="alert alert-danger" id="error-alert" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="error-message">Usuario o contraseña incorrectos</span>
+            </div>
+
+            <form id="login-form" action="{{ url_for('auth.login') }}" method="post">
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <i class="fas fa-envelope form-icon"></i>
+                    <input type="email" id="email" name="email" class="form-control"
+                        placeholder="Ingrese su correo electrónico" required>
+                    <div class="error-message">Por favor ingrese su correo electrónico</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <i class="fas fa-lock form-icon"></i>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Ingrese su contraseña" required>
+                    <div class="error-message">Por favor ingrese su contraseña</div>
+                </div>
+
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Recordar sesión</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="login-footer">
+        <p>Sistema de Administración de Carpintería &copy; 2025</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('login-form');
+            const errorAlert = document.getElementById('error-alert');
+            const errorMessage = document.getElementById('error-message');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Función para validar el formulario
+            function validateForm() {
+                let isValid = true;
+
+                // Validar email
+                if (!emailInput.value.trim()) {
+                    emailInput.classList.add('error');
+                    isValid = false;
+                } else {
+                    emailInput.classList.remove('error');
+                }
+
+                // Validar password
+                if (!passwordInput.value.trim()) {
+                    passwordInput.classList.add('error');
+                    isValid = false;
+                } else {
+                    passwordInput.classList.remove('error');
+                }
+
+                return isValid;
+            }
+
+            // Manejador de envío del formulario
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if (validateForm()) {
+                    // Envía el formulario al servidor
+                    this.submit();
+                }
+            });
+
+            // Ocultar alerta de error cuando el usuario comienza a escribir
+            emailInput.addEventListener('input', function () {
+                errorAlert.style.display = 'none';
+                this.classList.remove('error');
+            });
+
+            passwordInput.addEventListener('input', function () {
+                errorAlert.style.display = 'none';
+                this.classList.remove('error');
+            });
+        });
+    </script>
+</body>
+
+</html>
