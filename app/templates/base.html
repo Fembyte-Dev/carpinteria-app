@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Estilos CSS -->
      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+     {% block style %} {% endblock %}
 </head>
 <body>
     <!-- Overlay para cuando el sidebar está activo en móvil -->
@@ -48,7 +49,7 @@
         </div>
         <ul class="nav-list">
             <li class="nav-item">
-                <a href="/dashboard" class="nav-link active">
+                <a href="{{ url_for('dashboard.dashboard') }}" class="nav-link active">
                     <i class="fas fa-tachometer-alt"></i>
                     Dashboard
                 </a>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <style>
+        :root {
+            --primary-color: #7d5a50;
+            --primary-dark: #5e4238;
+            --primary-light: #b4947c;
+            --accent-color: #e6b89c;
+            --background-color: #f9f3ee;
+            --text-color: #2c2018;
+            --text-light: #6c6359;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --white: #ffffff;
+            --gray-light: #f1f1f1;
+            --gray: #d0d0d0;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .search-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .client-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .client-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .client-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .client-header {
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 1rem;
+            position: relative;
+        }
+
+        .client-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .client-body {
+            padding: 1rem;
+        }
+
+        .client-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            display: block;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .client-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .inactive {
+            opacity: 0.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .badge-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: var(--warning-color);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            background-color: var(--white);
+            border: 1px solid var(--gray);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-light);
+            color: var(--white);
+            border-color: var(--primary-light);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            grid-column: 1 / -1;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Estilos para responsive */
+        @media (max-width: 767px) {
+            .client-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .filter-options {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-title">
+            <h1>Clientes</h1>
+            <button class="btn btn-primary" onclick="location.href='create-client.html'">Nuevo Cliente</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Buscar por nombre, teléfono, email...">
+            <button class="btn" id="search-button">Buscar</button>
+        </div>
+
+        <div class="filter-options">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="active">Activos</button>
+            <button class="filter-btn" data-filter="inactive">Inactivos</button>
+            <button class="filter-btn" data-filter="invoice">Requieren Factura</button>
+        </div>
+
+        <div class="client-cards" id="client-list">
+            <!-- El contenido se cargará dinámicamente con JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo (reemplazar con datos reales de tu API)
+        const clientsData = [
+            {
+                id: '1',
+                first_name: 'Juan',
+                last_name: 'Pérez',
+                second_last_name: 'García',
+                contact: {
+                    phone_mobile: '555-123-4567',
+                    email: 'juan.perez@example.com'
+                },
+                address: {
+                    city: 'Ciudad de México',
+                    state: 'CDMX'
+                },
+                fiscal_data: {
+                    rfc: 'PEGJ800101ABC',
+                    requires_invoice: true
+                },
+                active: true
+            },
+            {
+                id: '2',
+                first_name: 'María',
+                last_name: 'López',
+                second_last_name: 'Rodríguez',
+                contact: {
+                    phone_mobile: '555-987-6543',
+                    email: 'maria.lopez@example.com'
+                },
+                address: {
+                    city: 'Guadalajara',
+                    state: 'Jalisco'
+                },
+                fiscal_data: {
+                    rfc: 'LORM790215XYZ',
+                    requires_invoice: false
+                },
+                active: true
+            },
+            {
+                id: '3',
+                first_name: 'Carlos',
+                last_name: 'Sánchez',
+                second_last_name: 'Martínez',
+                contact: {
+                    phone_mobile: '555-456-7890',
+                    email: 'carlos.sanchez@example.com'
+                },
+                address: {
+                    city: 'Monterrey',
+                    state: 'Nuevo León'
+                },
+                fiscal_data: {
+                    rfc: 'SAMC850630DEF',
+                    requires_invoice: true
+                },
+                active: false
+            },
+            {
+                id: '4',
+                first_name: 'Ana',
+                last_name: 'González',
+                second_last_name: 'Torres',
+                contact: {
+                    phone_mobile: '555-789-0123',
+                    email: 'ana.gonzalez@example.com'
+                },
+                address: {
+                    city: 'Puebla',
+                    state: 'Puebla'
+                },
+                fiscal_data: {
+                    rfc: 'GOTA880412GHI',
+                    requires_invoice: false
+                },
+                active: true
+            },
+            {
+                id: '5',
+                first_name: 'Roberto',
+                last_name: 'Díaz',
+                second_last_name: 'Flores',
+                contact: {
+                    phone_mobile: '555-234-5678',
+                    email: 'roberto.diaz@example.com'
+                },
+                address: {
+                    city: 'Querétaro',
+                    state: 'Querétaro'
+                },
+                fiscal_data: {
+                    rfc: 'DIFR760825JKL',
+                    requires_invoice: true
+                },
+                active: true
+            },
+            {
+                id: '6',
+                first_name: 'Laura',
+                last_name: 'Hernández',
+                second_last_name: 'Castro',
+                contact: {
+                    phone_mobile: '555-345-6789',
+                    email: 'laura.hernandez@example.com'
+                },
+                address: {
+                    city: 'Mérida',
+                    state: 'Yucatán'
+                },
+                fiscal_data: {
+                    rfc: 'HECL900217MNO',
+                    requires_invoice: false
+                },
+                active: false
+            }
+        ];
+
+        // Función para renderizar la lista de clientes
+        function renderClientList(clients) {
+            const clientList = document.getElementById('client-list');
+            clientList.innerHTML = '';
+
+            if (clients.length === 0) {
+                clientList.innerHTML = '<div class="no-results">No se encontraron clientes con los criterios de búsqueda.</div>';
+                return;
+            }
+
+            clients.forEach(client => {
+                const cardClass = client.active ? 'client-card' : 'client-card inactive';
+                const badgeClass = client.active ? 'badge badge-success' : 'badge badge-warning';
+                const badgeText = client.active ? 'Activo' : 'Inactivo';
+                const fullName = `${client.first_name} ${client.last_name} ${client.second_last_name || ''}`.trim();
+                
+                const clientCard = document.createElement('div');
+                clientCard.className = cardClass;
+                clientCard.innerHTML = `
+                    <div class="client-header">
+                        <h2 class="client-name">${fullName}</h2>
+                        <span class="${badgeClass}">${badgeText}</span>
+                        <div class="info-value">${client.fiscal_data.rfc || 'Sin RFC'}</div>
+                    </div>
+                    <div class="client-body">
+                        <div class="client-info">
+                            <div class="info-group">
+                                <span class="info-label">Teléfono</span>
+                                <div class="info-value">${client.contact.phone_mobile || 'No disponible'}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Email</span>
+                                <div class="info-value">${client.contact.email || 'No disponible'}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Ubicación</span>
+                                <div class="info-value">${client.address.city || ''}, ${client.address.state || 'No disponible'}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Facturación</span>
+                                <div class="info-value">${client.fiscal_data.requires_invoice ? 'Requiere factura' : 'No requiere factura'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="client-actions">
+                        <button class="btn btn-success" onclick="location.href='view-client.html?id=${client.id}'">Ver</button>
+                        <button class="btn" onclick="location.href='edit-client.html?id=${client.id}'">Editar</button>
+                        <button class="btn btn-danger" onclick="deleteClient('${client.id}')">Eliminar</button>
+                    </div>
+                `;
+                
+                clientList.appendChild(clientCard);
+            });
+        }
+
+        // Función para filtrar clientes
+        function filterClients(filter, searchTerm = '') {
+            let filteredClients = [...clientsData];
+            
+            // Aplicar filtro de estado
+            if (filter === 'active') {
+                filteredClients = filteredClients.filter(client => client.active);
+            } else if (filter === 'inactive') {
+                filteredClients = filteredClients.filter(client => !client.active);
+            } else if (filter === 'invoice') {
+                filteredClients = filteredClients.filter(client => client.fiscal_data.requires_invoice);
+            }
+            
+            // Aplicar búsqueda
+            if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
+                filteredClients = filteredClients.filter(client => {
+                    const fullName = `${client.first_name} ${client.last_name} ${client.second_last_name || ''}`.toLowerCase();
+                    const email = (client.contact.email || '').toLowerCase();
+                    const phone = (client.contact.phone_mobile || '').toLowerCase();
+                    const rfc = (client.fiscal_data.rfc || '').toLowerCase();
+                    
+                    return fullName.includes(searchLower) || 
+                           email.includes(searchLower) || 
+                           phone.includes(searchLower) || 
+                           rfc.includes(searchLower);
+                });
+            }
+            
+            renderClientList(filteredClients);
+        }
+
+        // Función para eliminar un cliente (simulada)
+        function deleteClient(clientId) {
+            if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+                // En un entorno real, aquí se haría la petición a la API
+                console.log('Eliminando cliente', clientId);
+                
+                // Simulando actualización del cliente
+                const index = clientsData.findIndex(client => client.id === clientId);
+                if (index !== -1) {
+                    clientsData[index].active = false;
+                    
+                    // Re-renderizar con el filtro actual
+                    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                    filterClients(activeFilter, document.getElementById('search-input').value);
+                }
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar lista inicial
+            renderClientList(clientsData);
+            
+            // Event listener para botones de filtro
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    // Actualizar estado activo de los botones
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+                    
+                    // Aplicar filtro
+                    const filter = button.dataset.filter;
+                    filterClients(filter, document.getElementById('search-input').value);
+                });
+            });
+            
+            // Event listener para búsqueda
+            document.getElementById('search-button').addEventListener('click', () => {
+                const searchTerm = document.getElementById('search-input').value;
+                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                filterClients(activeFilter, searchTerm);
+            });
+            
+            // Event listener para búsqueda en tiempo real
+            document.getElementById('search-input').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = e.target.value;
+                    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+                    filterClients(activeFilter, searchTerm);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

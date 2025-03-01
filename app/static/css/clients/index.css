@@ -1,0 +1,136 @@
+/* Estos estilos son adicionales para la vista de clientes y deberías agregarlos a tu archivo styles.css */
+
+/* Estilos para la vista de tarjetas de clientes */
+.search-container {
+    display: flex;
+    margin-bottom: 1.5rem;
+    gap: 10px;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--gray);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.client-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.client-card {
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.client-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.client-header {
+    background-color: var(--primary-light);
+    color: var(--white);
+    padding: 1rem;
+    position: relative;
+}
+
+.client-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.client-body {
+    padding: 1rem;
+}
+
+.client-info {
+    margin-bottom: 1rem;
+}
+
+.info-group {
+    margin-bottom: 0.8rem;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    display: block;
+}
+
+.info-value {
+    font-weight: 500;
+}
+
+.client-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-top: 1px solid var(--gray-light);
+}
+
+.inactive {
+    opacity: 0.6;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.filter-btn {
+    background-color: var(--white);
+    border: 1px solid var(--gray);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background-color: var(--primary-light);
+    color: var(--white);
+    border-color: var(--primary-light);
+}
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    grid-column: 1 / -1;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+/* Estilos para responsive */
+@media (max-width: 767px) {
+    .client-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .filter-options {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+}

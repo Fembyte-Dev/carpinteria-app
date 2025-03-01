@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<style>
+    /* Manteniendo todos los estilos CSS originales */
+    .profile-container {
+        max-width: 1000px;
+        margin: 50px auto;
+    }
+
+    .profile-header {
+        position: relative;
+        background-color: var(--primary-color);
+        border-radius: 8px 8px 0 0;
+        overflow: hidden;
+    }
+
+    .profile-header-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.2;
+        background-image: repeating-linear-gradient(45deg, var(--primary-dark) 0, var(--primary-dark) 10px, transparent 10px, transparent 20px);
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--white);
+        border: 4px solid var(--white);
+        position: relative;
+        top: 70px;
+        margin-left: 30px;
+        z-index: 10;
+    }
+
+    .profile-body {
+        background-color: var(--white);
+        border-radius: 0 0 8px 8px;
+        box-shadow: var(--box-shadow);
+        padding: 60px 30px 30px;
+        margin-top: -50px;
+    }
+
+    .profile-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--primary-dark);
+        margin-bottom: 5px;
+    }
+
+    .profile-status {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .profile-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--gray);
+        margin-bottom: 20px;
+    }
+
+    .profile-tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-light);
+        border-bottom: 3px solid transparent;
+    }
+
+    .profile-tab.active {
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .info-card {
+        border: 1px solid var(--gray-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .info-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--gray-light);
+    }
+
+    .info-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .info-card-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-light);
+        color: var(--white);
+        border-radius: 50%;
+    }
+
+    .info-item {
+        margin-bottom: 12px;
+        display: flex;
+    }
+
+    .info-label {
+        flex: 0 0 140px;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .info-value {
+        flex: 1;
+        word-break: break-word;
+    }
+
+    .edit-btn {
+        background-color: transparent;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .edit-btn:hover {
+        color: var(--primary-dark);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated-fade {
+        animation: fadeIn 0.3s ease forwards;
+    }
+
+    @media (max-width: 768px) {
+        .profile-tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .info-item {
+            flex-direction: column;
+        }
+        
+        .info-label {
+            flex: 0 0 100%;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-header-pattern"></div>
+        </div>
+        
+        <div class="profile-body">
+            <div class="profile-name">{{ client.first_name }} {{ client.last_name }} {{ client.second_last_name }}</div>
+            <div class="profile-status">
+                {% if client.active %}
+                    <span class="badge badge-success">Activo</span>
+                {% else %}
+                    <span class="badge badge-danger">Inactivo</span>
+                {% endif %}
+            </div>
+            
+            <div class="profile-tabs">
+                <div class="profile-tab active" data-tab="personal">Información Personal</div>
+                <div class="profile-tab" data-tab="contact">Contacto</div>
+                <div class="profile-tab" data-tab="fiscal">Datos Fiscales</div>
+            </div>
+            
+            <!-- Tab: Información Personal -->
+            <div class="tab-content active" id="tab-personal">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-user"></i></div>
+                            Información Básica
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Nombre:</div>
+                        <div class="info-value">{{ client.first_name if client.first_name else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Apellido Paterno:</div>
+                        <div class="info-value">{{ client.last_name if client.last_name else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Apellido Materno:</div>
+                        <div class="info-value">{{ client.second_last_name if client.second_last_name else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fecha de registro:</div>
+                        <div class="info-value">{{ client.registration_date.strftime('%d de %B de %Y') if client.registration_date else 'No especificada' }}</div>
+                    </div>
+                </div>
+                
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            Dirección
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Calle:</div>
+                        <div class="info-value">{{ client.address.street if client.address else 'No especificada' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ciudad:</div>
+                        <div class="info-value">{{ client.address.city if client.address else 'No especificada' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Estado:</div>
+                        <div class="info-value">{{ client.address.state if client.address else 'No especificada' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Código Postal:</div>
+                        <div class="info-value">{{ client.address.zip if client.address else 'No especificado' }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Contacto -->
+            <div class="tab-content" id="tab-contact">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-phone-alt"></i></div>
+                            Información de Contacto
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Teléfono móvil:</div>
+                        <div class="info-value">{{ client.contact.phone_mobile if client.contact else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Teléfono fijo:</div>
+                        <div class="info-value">{{ client.contact.phone_landline if client.contact else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Correo electrónico:</div>
+                        <div class="info-value">{{ client.contact.email if client.contact else 'No especificado' }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Datos Fiscales -->
+            <div class="tab-content" id="tab-fiscal">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                            Datos Fiscales
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">RFC:</div>
+                        <div class="info-value">{{ client.fiscal_data.rfc if client.fiscal_data else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Nombre fiscal:</div>
+                        <div class="info-value">{{ client.fiscal_data.fiscal_name if client.fiscal_data else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Régimen:</div>
+                        <div class="info-value">{{ client.fiscal_data.regimen if client.fiscal_data else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">CP Fiscal:</div>
+                        <div class="info-value">{{ client.fiscal_data.fiscal_zip if client.fiscal_data else 'No especificado' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Requiere factura:</div>
+                        <div class="info-value">{{ 'Sí' if client.fiscal_data and client.fiscal_data.requires_invoice else 'No' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tabs de navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.profile-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    this.classList.add('active');
+                    const tabId = `tab-${this.dataset.tab}`;
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Botones de edición
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Función de edición: Esta característica se implementará próximamente');
+                });
+            });
+        });
+    </script>
+</body>
+
+{% endblock %}

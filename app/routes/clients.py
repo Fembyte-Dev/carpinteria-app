@@ -12,7 +12,9 @@ def index():
     Muestra una lista de todos los clientes activos.
     """
     clients = Client.objects(active=True)  # Filtra solo clientes activos
+    print(clients)
     return render_template('clients/index.html', clients=clients)
+
 
 # Ruta para mostrar el formulario de creación de un cliente
 @clients_bp.route('/clients/create', methods=['GET'])
@@ -159,3 +161,17 @@ def delete_client(client_id):
         except Exception as e:
             flash(f'Error al eliminar cliente: {str(e)}', 'danger')
     return redirect(url_for('clients.index'))
+
+# Ruta para ver los detalles de un cliente
+@clients_bp.route('/clients/view/<client_id>', methods=['GET'])
+@login_required
+def view_client(client_id):
+    """
+    Muestra los detalles de un cliente específico.
+    """
+    client = Client.objects(id=client_id, active=True).first()
+
+    if not client:
+        flash('Cliente no encontrado.', 'danger')
+        return redirect(url_for('clients.index'))
+    return render_template('clients/view.html', client=client)

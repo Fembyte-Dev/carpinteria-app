@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Editar Cliente</h1>
+
+<h1 class="page-title">Editar Cliente</h1>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -9,14 +11,155 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
-<form method="post" action="{{ url_for('clients.index', client_id=client.id) }}">
-    <label>Nombre: <input type="text" name="first_name" value="{{ client.first_name }}" required></label><br>
-    <label>Apellido: <input type="text" name="last_name" value="{{ client.last_name }}" required></label><br>
-    <label>Segundo Apellido: <input type="text" name="second_last_name" value="{{ client.second_last_name or '' }}"></label><br>
-    <label>Teléfono Móvil: <input type="text" name="phone_mobile" value="{{ client.contact.phone_mobile if client.contact else '' }}"></label><br>
-    <label>Teléfono Fijo: <input type="text" name="phone_landline" value="{{ client.contact.phone_landline if client.contact else '' }}"></label><br>
-    <label>Email: <input type="email" name="email" value="{{ client.contact.email if client.contact else '' }}"></label><br>
-    <button type="submit">Guardar Cambios</button>
-</form>
-<a href="{{ url_for('clients.index') }}">Volver a la lista</a>
+
+<div class="client-form-container">
+  <form method="POST" action="{{ url_for('clients.edit_client', client_id=client.id) }}">
+    <!-- Datos personales -->
+    <div class="form-section">
+      <h3>Datos Personales</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="first_name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ client.first_name }}" required>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="last_name" class="form-label">Apellido Paterno</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ client.last_name }}" required>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="second_last_name" class="form-label">Apellido Materno (Opcional)</label>
+            <input type="text" class="form-control" id="second_last_name" name="second_last_name" value="{{ client.second_last_name }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos de contacto -->
+    <div class="form-section">
+      <h3>Datos de Contacto</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="phone_mobile" class="form-label">Teléfono Móvil</label>
+            <input type="text" class="form-control" id="phone_mobile" name="phone_mobile" value="{{ client.contact.phone_mobile }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="phone_landline" class="form-label">Teléfono Fijo</label>
+            <input type="text" class="form-control" id="phone_landline" name="phone_landline" value="{{ client.contact.phone_landline }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ client.contact.email }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dirección -->
+    <div class="form-section">
+      <h3>Dirección</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="street" class="form-label">Calle</label>
+            <input type="text" class="form-control" id="street" name="street" value="{{ client.address.street }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="city" class="form-label">Ciudad</label>
+            <input type="text" class="form-control" id="city" name="city" value="{{ client.address.city }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="state" class="form-label">Estado</label>
+            <input type="text" class="form-control" id="state" name="state" value="{{ client.address.state }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="zip" class="form-label">Código Postal</label>
+            <input type="text" class="form-control" id="zip" name="zip" value="{{ client.address.zip }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos fiscales -->
+    <div class="form-section">
+      <h3>Datos Fiscales</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="rfc" class="form-label">RFC</label>
+            <input type="text" class="form-control" id="rfc" name="rfc" value="{{ client.fiscal_data.rfc }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="fiscal_name" class="form-label">Nombre Fiscal</label>
+            <input type="text" class="form-control" id="fiscal_name" name="fiscal_name" value="{{ client.fiscal_data.fiscal_name }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="regimen" class="form-label">Régimen Fiscal</label>
+            <input type="text" class="form-control" id="regimen" name="regimen" value="{{ client.fiscal_data.regimen }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="fiscal_zip" class="form-label">Código Postal Fiscal</label>
+            <input type="text" class="form-control" id="fiscal_zip" name="fiscal_zip" value="{{ client.fiscal_data.fiscal_zip }}">
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="requires_invoice" name="requires_invoice" {% if client.fiscal_data.requires_invoice %}checked{% endif %}>
+            <label for="requires_invoice" class="form-check-label">Requiere Factura</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div class="form-section">
+      <h3>Notas</h3>
+      <div class="form-row">
+        <div class="form-col">
+          <div class="form-group">
+            <label for="preferences" class="form-label">Preferencias</label>
+            <textarea class="form-control" id="preferences" name="preferences" rows="3">{{ client.notes.preferences }}</textarea>
+          </div>
+        </div>
+        <div class="form-col">
+          <div class="form-group">
+            <label for="observations" class="form-label">Observaciones</label>
+            <textarea class="form-control" id="observations" name="observations" rows="3">{{ client.notes.observations }}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{{ url_for('clients.index') }}" class="btn">Cancelar</a>
+      </div>
+      <a href="{{ url_for('clients.index') }}" class="btn">Volver a la lista</a>
+    </div>
+  </form>
+</div>
+
 {% endblock %}

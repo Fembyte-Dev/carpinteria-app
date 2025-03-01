@@ -1,39 +1,162 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block style %} <link rel="stylesheet" href="{{ url_for('static', filename='css/clients/index.css') }}"> {% endblock %}
 
-<h1>Lista de Clientes</h1>
-<a href="{{ url_for('clients.create_client_form') }}">Crear Nuevo Cliente</a>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-<table>
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Teléfono Móvil</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for client in clients %}
-        <tr>
-            <td>{{ client.first_name }}</td>
-            <td>{{ client.last_name }}</td>
-            <td>{{ client.contact.phone_mobile if client.contact else '' }}</td>
-            <td>
-                <a href="{{ url_for('clients.edit_client_form', client_id=client.id) }}">Editar</a>
-                <form action="{{ url_for('clients.delete_client', client_id=client.id) }}" method="post" style="display:inline;">
-                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% block content %}
+<div class="container">
+    <div class="page-title">
+        <h1>Clientes</h1>
+        <a href="{{ url_for('clients.create_client_form') }}" class="btn btn-primary">Nuevo Cliente</a>
+    </div>
+
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar por nombre, teléfono, email...">
+        <button class="btn" id="search-button">Buscar</button>
+    </div>
+
+    <div class="filter-options">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="active">Activos</button>
+        <button class="filter-btn" data-filter="inactive">Inactivos</button>
+        <button class="filter-btn" data-filter="invoice">Requieren Factura</button>
+    </div>
+
+    <div class="client-cards" id="client-list">
+        {% if clients %}
+            {% for client in clients %}
+                <div class="client-card {% if not client.active %}inactive{% endif %}">
+                    <div class="client-header">
+                        <h2 class="client-name">{{ client.first_name }} {{ client.last_name }} {{ client.second_last_name or '' }}</h2>
+                        <span class="badge {% if client.active %}badge-success{% else %}badge-warning{% endif %}">
+                            {% if client.active %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                        <div class="info-value">{{ client.fiscal_data.rfc or 'Sin RFC' }}</div>
+                    </div>
+                    <div class="client-body">
+                        <div class="client-info">
+                            <div class="info-group">
+                                <span class="info-label">Teléfono</span>
+                                <div class="info-value">{{ client.contact.phone_mobile or 'No disponible' }}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Email</span>
+                                <div class="info-value">{{ client.contact.email or 'No disponible' }}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Ubicación</span>
+                                <div class="info-value">{{ client.address.city or '' }}, {{ client.address.state or 'No disponible' }}</div>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Facturación</span>
+                                <div class="info-value">{{ 'Requiere factura' if client.fiscal_data and client.fiscal_data.requires_invoice else 'No requiere factura' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="client-actions">
+                        <a href="{{ url_for('clients.view_client', client_id=client.id) }}" class="btn btn-success">Ver</a>
+                        <a href="{{ url_for('clients.edit_client_form', client_id=client.id) }}" class="btn">Editar</a>
+                        <form action="{{ url_for('clients.delete_client', client_id=client.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">No se encontraron clientes con los criterios de búsqueda.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const clientCards = document.querySelectorAll('.client-card');
+        
+        // Función para filtrar clientes
+        function filterClients() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            
+            clientCards.forEach(card => {
+                // Obtenemos los datos del cliente para búsqueda
+                const name = card.querySelector('.client-name').textContent.toLowerCase();
+                const phone = card.querySelector('.info-group:nth-child(1) .info-value').textContent.toLowerCase();
+                const email = card.querySelector('.info-group:nth-child(2) .info-value').textContent.toLowerCase();
+                const rfc = card.querySelector('.client-header .info-value').textContent.toLowerCase();
+                
+                // Condición de búsqueda
+                const matchesSearch = name.includes(searchTerm) || 
+                                     phone.includes(searchTerm) || 
+                                     email.includes(searchTerm) || 
+                                     rfc.includes(searchTerm);
+                
+                // Condición de filtro
+                let matchesFilter = true;
+                if (activeFilter === 'active') {
+                    matchesFilter = !card.classList.contains('inactive');
+                } else if (activeFilter === 'inactive') {
+                    matchesFilter = card.classList.contains('inactive');
+                } else if (activeFilter === 'invoice') {
+                    const facturacion = card.querySelector('.info-group:nth-child(4) .info-value').textContent.toLowerCase();
+                    matchesFilter = facturacion.includes('requiere factura');
+                }
+                
+                // Mostrar u ocultar según los criterios
+                if (matchesSearch && matchesFilter) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Mostrar mensaje si no hay resultados
+            const visibleCards = [...clientCards].filter(card => card.style.display !== 'none');
+            const noResults = document.querySelector('.no-results');
+            
+            if (noResults) {
+                noResults.remove();
+            }
+            
+            if (visibleCards.length === 0) {
+                const noResultsDiv = document.createElement('div');
+                noResultsDiv.className = 'no-results';
+                noResultsDiv.textContent = 'No se encontraron clientes con los criterios de búsqueda.';
+                document.getElementById('client-list').appendChild(noResultsDiv);
+            }
+        }
+        
+        // Event listeners para búsqueda
+        searchButton.addEventListener('click', filterClients);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                filterClients();
+            }
+        });
+        
+        // Event listeners para filtros
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Cambiar botón activo
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Filtrar clientes
+                filterClients();
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -222,6 +222,99 @@ main {
     outline: none;
 }
 
+/* Estilos específicos para el formulario de clientes */
+.client-form-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.form-section {
+    background-color: var(--white);
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-section h3 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--primary-light);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -0.5rem;
+}
+
+.form-col {
+    flex: 1 0 100%;
+    padding: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.form-actions .btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+}
+
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.alert-danger {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.alert-warning {
+    background-color: rgba(255, 152, 0, 0.2);
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-check-input {
+    width: auto;
+}
+
+/* Media queries para responsive */
+@media (min-width: 768px) {
+    .form-col {
+        flex: 0 0 50%;
+    }
+}
+
+@media (min-width: 992px) {
+    .form-col-lg-3 {
+        flex: 0 0 33.333%;
+    }
+}
+
 /* Buttons */
 .btn {
     display: inline-block;
