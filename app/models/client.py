@@ -1,6 +1,5 @@
 from datetime import datetime
 from mongoengine import Document, EmbeddedDocument, fields
-from app import db
 
 class Contact(EmbeddedDocument):
     phone_mobile = fields.StringField()
@@ -24,7 +23,7 @@ class Notes(EmbeddedDocument):
     preferences = fields.StringField()
     observations = fields.StringField()
 
-class Client(db.Document):
+class Client(Document):
     first_name = fields.StringField(required=True)
     last_name = fields.StringField(required=True)
     second_last_name = fields.StringField()

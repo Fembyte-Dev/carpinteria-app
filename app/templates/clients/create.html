@@ -1,0 +1,19 @@
+
+<h1>Crear Cliente</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<form method="post" action="{{ url_for('clients.create_client') }}">
+    <label>Nombre: <input type="text" name="first_name" required></label><br>
+    <label>Apellido: <input type="text" name="last_name" required></label><br>
+    <label>Segundo Apellido: <input type="text" name="second_last_name"></label><br>
+    <label>Teléfono Móvil: <input type="text" name="phone_mobile"></label><br>
+    <label>Teléfono Fijo: <input type="text" name="phone_landline"></label><br>
+    <label>Email: <input type="email" name="email"></label><br>
+    <button type="submit">Crear Cliente</button>
+</form>
+<a href="{{ url_for('clients.index') }}">Volver a la lista</a>

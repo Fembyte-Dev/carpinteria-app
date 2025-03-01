@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Editar Cliente</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<form method="post" action="{{ url_for('clients.index', client_id=client.id) }}">
+    <label>Nombre: <input type="text" name="first_name" value="{{ client.first_name }}" required></label><br>
+    <label>Apellido: <input type="text" name="last_name" value="{{ client.last_name }}" required></label><br>
+    <label>Segundo Apellido: <input type="text" name="second_last_name" value="{{ client.second_last_name or '' }}"></label><br>
+    <label>Teléfono Móvil: <input type="text" name="phone_mobile" value="{{ client.contact.phone_mobile if client.contact else '' }}"></label><br>
+    <label>Teléfono Fijo: <input type="text" name="phone_landline" value="{{ client.contact.phone_landline if client.contact else '' }}"></label><br>
+    <label>Email: <input type="email" name="email" value="{{ client.contact.email if client.contact else '' }}"></label><br>
+    <button type="submit">Guardar Cambios</button>
+</form>
+<a href="{{ url_for('clients.index') }}">Volver a la lista</a>
+{% endblock %}

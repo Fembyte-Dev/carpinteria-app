@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Lista de Clientes</h1>
+<a href="{{ url_for('clients.create_client_form') }}">Crear Nuevo Cliente</a>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Teléfono Móvil</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <tr>
+            <td>{{ client.first_name }}</td>
+            <td>{{ client.last_name }}</td>
+            <td>{{ client.contact.phone_mobile if client.contact else '' }}</td>
+            <td>
+                <a href="{{ url_for('clients.edit_client_form', client_id=client.id) }}">Editar</a>
+                <form action="{{ url_for('clients.delete_client', client_id=client.id) }}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
