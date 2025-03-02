@@ -1,0 +1,487 @@
+{% extends 'base.html' %}
+
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clients/create.css') }}">
+
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Crear Cliente</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container">
+  <div class="form-header">
+    <h1>Registro de Cliente</h1>
+    <p>Complete los campos para crear un nuevo cliente</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step active" data-step="1">
+      <div class="progress-step-number">1</div>
+      <div class="progress-step-label">Datos Personales</div>
+      <div class="progress-step-line"></div>
+    </div>
+    <div class="progress-step" data-step="2">
+      <div class="progress-step-number">2</div>
+      <div class="progress-step-label">Contacto</div>
+      <div class="progress-step-line"></div>
+    </div>
+    <div class="progress-step" data-step="3">
+      <div class="progress-step-number">3</div>
+      <div class="progress-step-label">Dirección</div>
+      <div class="progress-step-line"></div>
+    </div>
+    <div class="progress-step" data-step="4">
+      <div class="progress-step-number">4</div>
+      <div class="progress-step-label">Datos Fiscales</div>
+      <div class="progress-step-line"></div>
+    </div>
+    <div class="progress-step" data-step="5">
+      <div class="progress-step-number">5</div>
+      <div class="progress-step-label">Notas</div>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <form id="clientForm" method="POST" action="{{ url_for('clients.create_client') }}">
+      <!-- Datos personales -->
+      <div class="form-section active" data-section="1">
+        <h3>Datos Personales</h3>
+        <div class="form-content">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="first_name" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                <div class="form-feedback"></div>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="last_name" class="form-label">Apellido Paterno</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                <div class="form-feedback"></div>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="second_last_name" class="form-label">Apellido Materno (Opcional)</label>
+                <input type="text" class="form-control" id="second_last_name" name="second_last_name">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos de contacto -->
+      <div class="form-section collapsed" data-section="2">
+        <h3>Datos de Contacto</h3>
+        <div class="form-content">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="phone_mobile" class="form-label">Teléfono Móvil</label>
+                <input type="tel" class="form-control" id="phone_mobile" name="phone_mobile">
+                <div class="form-feedback"></div>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="phone_landline" class="form-label">Teléfono Fijo</label>
+                <input type="tel" class="form-control" id="phone_landline" name="phone_landline">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" name="email">
+                <div class="form-feedback"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="form-section collapsed" data-section="3">
+        <h3>Dirección</h3>
+        <div class="form-content">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="street" class="form-label">Calle</label>
+                <input type="text" class="form-control" id="street" name="street">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="city" class="form-label">Ciudad</label>
+                <input type="text" class="form-control" id="city" name="city">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="state" class="form-label">Estado</label>
+                <input type="text" class="form-control" id="state" name="state">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="zip" class="form-label">Código Postal</label>
+                <input type="text" class="form-control" id="zip" name="zip">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos fiscales -->
+      <div class="form-section collapsed" data-section="4">
+        <h3>Datos Fiscales</h3>
+        <div class="form-content">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="rfc" class="form-label">RFC</label>
+                <input type="text" class="form-control" id="rfc" name="rfc">
+                <div class="form-feedback"></div>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="fiscal_name" class="form-label">Nombre Fiscal</label>
+                <input type="text" class="form-control" id="fiscal_name" name="fiscal_name">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="regimen" class="form-label">Régimen Fiscal</label>
+                <input type="text" class="form-control" id="regimen" name="regimen">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="fiscal_zip" class="form-label">Código Postal Fiscal</label>
+                <input type="text" class="form-control" id="fiscal_zip" name="fiscal_zip">
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="requires_invoice" name="requires_invoice">
+                <label for="requires_invoice" class="form-check-label">Requiere Factura</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="form-section collapsed" data-section="5">
+        <h3>Notas</h3>
+        <div class="form-content">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label for="preferences" class="form-label">Preferencias</label>
+                <textarea class="form-control" id="preferences" name="preferences" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label for="observations" class="form-label">Observaciones</label>
+                <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        <div>
+          <button type="button" id="prevBtn" class="btn btn-secondary">Anterior</button>
+          <button type="button" id="nextBtn" class="btn btn-primary">Siguiente</button>
+          <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">Crear
+            Cliente</button>
+        </div>
+        <a href="{{ url_for('clients.index') }}" class="btn btn-secondary">Volver a la lista</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Variables
+      const formSections = document.querySelectorAll('.form-section');
+      const progressSteps = document.querySelectorAll('.progress-step');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const form = document.getElementById('clientForm');
+
+      let currentSection = 1;
+      const totalSections = formSections.length;
+
+      // Inicializar
+      updateButtonsState();
+
+      // Eventos para abrir/cerrar secciones al hacer clic en títulos
+      formSections.forEach(section => {
+          const sectionTitle = section.querySelector('h3');
+
+          sectionTitle.addEventListener('click', function () {
+              // Si la sección está colapsada, expandirla
+              if (section.classList.contains('collapsed')) {
+                  // Activar la sección clicada
+                  formSections.forEach(s => s.classList.remove('active'));
+                  section.classList.add('active');
+                  section.classList.remove('collapsed');
+
+                  // Actualizar la navegación
+                  const sectionIndex = parseInt(section.dataset.section);
+                  currentSection = sectionIndex;
+                  updateProgress();
+                  updateButtonsState();
+              } else {
+                  // Solo permitir colapsar si no es la sección actual del progreso
+                  if (parseInt(section.dataset.section) !== currentSection) {
+                      section.classList.add('collapsed');
+                      section.classList.remove('active');
+                  }
+              }
+          });
+      });
+
+      // Evento botón anterior
+      prevBtn.addEventListener('click', function () {
+          if (currentSection > 1) {
+              navigateTo(currentSection - 1);
+          }
+      });
+
+      // Evento botón siguiente
+      nextBtn.addEventListener('click', function () {
+          if (validateCurrentSection()) {
+              if (currentSection < totalSections) {
+                  navigateTo(currentSection + 1);
+              }
+          } else {
+              // Animar campos con error
+              const invalidInputs = formSections[currentSection - 1].querySelectorAll('.invalid');
+              invalidInputs.forEach(input => {
+                  input.classList.add('shake');
+                  setTimeout(() => {
+                      input.classList.remove('shake');
+                  }, 500);
+              });
+          }
+      });
+
+      // Validar inputs al perder el foco
+      const inputs = document.querySelectorAll('.form-control');
+      inputs.forEach(input => {
+          input.addEventListener('blur', function () {
+              validateInput(this);
+          });
+
+          input.addEventListener('input', function () {
+              // Remover clases de validación al escribir
+              this.classList.remove('valid', 'invalid');
+              const feedback = this.parentElement.querySelector('.form-feedback');
+              if (feedback) {
+                  feedback.textContent = '';
+                  feedback.classList.remove('error', 'success');
+              }
+          });
+      });
+
+      // Validar campo específico
+      function validateInput(input) {
+          if (!input.required && input.value === '') return true;
+
+          const feedback = input.parentElement.querySelector('.form-feedback');
+          let isValid = true;
+          let message = '';
+
+          // Validaciones específicas
+          switch (input.id) {
+              case 'first_name':
+              case 'last_name':
+                  if (input.value.length < 2) {
+                      isValid = false;
+                      message = 'Debe tener al menos 2 caracteres';
+                  }
+                  break;
+              case 'email':
+                  if (input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+                      isValid = false;
+                      message = 'Correo electrónico inválido';
+                  }
+                  break;
+              case 'phone_mobile':
+                  if (input.value && !/^\d{10}$/.test(input.value.replace(/\D/g, ''))) {
+                      isValid = false;
+                      message = 'Debe tener 10 dígitos';
+                  }
+                  break;
+              case 'rfc':
+                  if (input.value && !/^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$/.test(input.value)) {
+                      isValid = false;
+                      message = 'Formato de RFC inválido';
+                  }
+                  break;
+          }
+
+          // Actualizar estado de validación
+          if (isValid) {
+              input.classList.add('valid');
+              input.classList.remove('invalid');
+              if (feedback) {
+                  feedback.textContent = 'Correcto';
+                  feedback.classList.add('success');
+                  feedback.classList.remove('error');
+              }
+          } else {
+              input.classList.add('invalid');
+              input.classList.remove('valid');
+              if (feedback) {
+                  feedback.textContent = message;
+                  feedback.classList.add('error');
+                  feedback.classList.remove('success');
+              }
+          }
+
+          return isValid;
+      }
+
+      // Validar sección actual
+      function validateCurrentSection() {
+          const currentSectionElement = document.querySelector(`.form-section[data-section="${currentSection}"]`);
+          const requiredInputs = currentSectionElement.querySelectorAll('.form-control[required]');
+          let isValid = true;
+
+          requiredInputs.forEach(input => {
+              if (!validateInput(input)) {
+                  isValid = false;
+              }
+          });
+
+          return isValid;
+      }
+
+      // Navegar a una sección específica
+      function navigateTo(sectionIndex) {
+          // Ocultar todas las secciones
+          formSections.forEach(section => {
+              section.classList.remove('active');
+          });
+
+          // Mostrar la sección seleccionada
+          const targetSection = document.querySelector(`.form-section[data-section="${sectionIndex}"]`);
+          targetSection.classList.add('active');
+          targetSection.classList.remove('collapsed');
+
+          // Animar la transición
+          targetSection.classList.add('pulse');
+          setTimeout(() => {
+              targetSection.classList.remove('pulse');
+          }, 400);
+
+          // Actualizar sección actual
+          currentSection = sectionIndex;
+
+          // Actualizar barra de progreso
+          updateProgress();
+
+          // Actualizar estado de botones
+          updateButtonsState();
+
+          // Desplazar a la vista
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // Actualizar barra de progreso
+      function updateProgress() {
+          progressSteps.forEach((step, index) => {
+              const stepIndex = index + 1;
+
+              if (stepIndex < currentSection) {
+                  // Paso completado
+                  step.classList.add('completed');
+                  step.classList.remove('active');
+              } else if (stepIndex === currentSection) {
+                  // Paso actual
+                  step.classList.add('active');
+                  step.classList.remove('completed');
+              } else {
+                  // Paso pendiente
+                  step.classList.remove('active', 'completed');
+              }
+          });
+      }
+
+      // Actualizar estado de botones
+      function updateButtonsState() {
+          prevBtn.style.display = currentSection === 1 ? 'none' : 'inline-block';
+
+          if (currentSection === totalSections) {
+              nextBtn.style.display = 'none';
+              submitBtn.style.display = 'inline-block';
+          } else {
+              nextBtn.style.display = 'inline-block';
+              submitBtn.style.display = 'none';
+          }
+      }
+
+      // Evento de envío del formulario
+      form.addEventListener('submit', function (event) {
+          // Validar toda la forma antes de enviar
+          let isFormValid = true;
+
+          formSections.forEach((section, index) => {
+              const sectionIndex = index + 1;
+              const requiredInputs = section.querySelectorAll('.form-control[required]');
+
+              requiredInputs.forEach(input => {
+                  if (!validateInput(input)) {
+                      isFormValid = false;
+
+                      // Si encontramos un campo inválido, navegamos a esa sección
+                      if (currentSection !== sectionIndex) {
+                          navigateTo(sectionIndex);
+                          return;
+                      }
+                  }
+              });
+          });
+
+          if (!isFormValid) {
+              event.preventDefault();
+          }
+      });
+
+      // Permitir usar los pasos de progreso para navegar
+      progressSteps.forEach(step => {
+          step.addEventListener('click', function () {
+              const stepIndex = parseInt(this.dataset.step);
+
+              // Solo permitir navegar a pasos completados o al siguiente paso
+              if (stepIndex <= currentSection + 1) {
+                  navigateTo(stepIndex);
+              }
+          });
+      });
+  });
+</script>
+{% endblock %}

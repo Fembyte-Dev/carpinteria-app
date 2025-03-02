@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clients/view.css') }}">
+{% endblock %}
+
 {% block content %}
-
-<h1 class="page-title">Crear Cliente</h1>
-
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -12,154 +13,362 @@
   {% endif %}
 {% endwith %}
 
-<div class="client-form-container">
-  <form method="POST" action="{{ url_for('clients.create_client') }}">
-    <!-- Datos personales -->
-    <div class="form-section">
-      <h3>Datos Personales</h3>
-      <div class="form-row">
-        <div class="form-col">
-          <div class="form-group">
-            <label for="first_name" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="first_name" name="first_name" required>
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="last_name" class="form-label">Apellido Paterno</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" required>
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="second_last_name" class="form-label">Apellido Materno (Opcional)</label>
-            <input type="text" class="form-control" id="second_last_name" name="second_last_name">
-          </div>
-        </div>
-      </div>
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-header-pattern"></div>
     </div>
-
-    <!-- Datos de contacto -->
-    <div class="form-section">
-      <h3>Datos de Contacto</h3>
-      <div class="form-row">
-        <div class="form-col">
-          <div class="form-group">
-            <label for="phone_mobile" class="form-label">Teléfono Móvil</label>
-            <input type="text" class="form-control" id="phone_mobile" name="phone_mobile">
-          </div>
+    
+    <div class="profile-body">
+        <div class="profile-name">Nuevo Cliente</div>
+        
+        <div class="profile-tabs">
+            <div class="profile-tab active" data-tab="personal">Información Personal</div>
+            <div class="profile-tab" data-tab="contact">Contacto</div>
+            <div class="profile-tab" data-tab="fiscal">Datos Fiscales</div>
+            <div class="profile-tab" data-tab="notes">Notas</div>
         </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="phone_landline" class="form-label">Teléfono Fijo</label>
-            <input type="text" class="form-control" id="phone_landline" name="phone_landline">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" name="email">
-          </div>
-        </div>
-      </div>
+        
+        <form id="clientForm" method="POST" action="{{ url_for('clients.create_client') }}" class="edit-mode">
+            <div class="form-errors" style="display: none;"></div>
+            <!-- Tab: Información Personal -->
+            <div class="tab-content active" id="tab-personal">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-user"></i></div>
+                            Información Básica
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Nombre:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="" required>
+                            <div class="error-message" id="first_name-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Apellido Paterno:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="" required>
+                            <div class="error-message" id="last_name-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Apellido Materno:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="second_last_name" name="second_last_name" value="">
+                            <div class="error-message" id="second_last_name-error"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            Dirección
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Calle:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="street" name="street" value="">
+                            <div class="error-message" id="street-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Ciudad:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="city" name="city" value="">
+                            <div class="error-message" id="city-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Estado:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="state" name="state" value="">
+                            <div class="error-message" id="state-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Código Postal:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="zip" name="zip" value="">
+                            <div class="error-message" id="zip-error"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Contacto -->
+            <div class="tab-content" id="tab-contact">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-phone-alt"></i></div>
+                            Información de Contacto
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Teléfono móvil:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="phone_mobile" name="phone_mobile" value="">
+                            <div class="error-message" id="phone_mobile-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Teléfono fijo:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="phone_landline" name="phone_landline" value="">
+                            <div class="error-message" id="phone_landline-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Correo electrónico:</div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" name="email" value="">
+                            <div class="error-message" id="email-error"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Datos Fiscales -->
+            <div class="tab-content" id="tab-fiscal">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                            Datos Fiscales
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">RFC:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="rfc" name="rfc" value="">
+                            <div class="error-message" id="rfc-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Nombre fiscal:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="fiscal_name" name="fiscal_name" value="">
+                            <div class="error-message" id="fiscal_name-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Régimen:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="regimen" name="regimen" value="">
+                            <div class="error-message" id="regimen-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">CP Fiscal:</div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="fiscal_zip" name="fiscal_zip" value="">
+                            <div class="error-message" id="fiscal_zip-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Requiere factura:</div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="requires_invoice" name="requires_invoice">
+                            <label class="form-check-label" for="requires_invoice">Requiere Factura</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Notas -->
+            <div class="tab-content" id="tab-notes">
+                <div class="info-card animated-fade">
+                    <div class="info-card-header">
+                        <div class="info-card-title">
+                            <div class="info-card-icon"><i class="fas fa-sticky-note"></i></div>
+                            Notas y Preferencias
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Preferencias:</div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="preferences" name="preferences" rows="3"></textarea>
+                            <div class="error-message" id="preferences-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-label">Observaciones:</div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
+                            <div class="error-message" id="observations-error"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="profile-actions">
+                <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                <a href="{{ url_for('clients.index') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
     </div>
-
-    <!-- Dirección -->
-    <div class="form-section">
-      <h3>Dirección</h3>
-      <div class="form-row">
-        <div class="form-col">
-          <div class="form-group">
-            <label for="street" class="form-label">Calle</label>
-            <input type="text" class="form-control" id="street" name="street">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="city" class="form-label">Ciudad</label>
-            <input type="text" class="form-control" id="city" name="city">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="state" class="form-label">Estado</label>
-            <input type="text" class="form-control" id="state" name="state">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="zip" class="form-label">Código Postal</label>
-            <input type="text" class="form-control" id="zip" name="zip">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Datos fiscales -->
-    <div class="form-section">
-      <h3>Datos Fiscales</h3>
-      <div class="form-row">
-        <div class="form-col">
-          <div class="form-group">
-            <label for="rfc" class="form-label">RFC</label>
-            <input type="text" class="form-control" id="rfc" name="rfc">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="fiscal_name" class="form-label">Nombre Fiscal</label>
-            <input type="text" class="form-control" id="fiscal_name" name="fiscal_name">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="regimen" class="form-label">Régimen Fiscal</label>
-            <input type="text" class="form-control" id="regimen" name="regimen">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="fiscal_zip" class="form-label">Código Postal Fiscal</label>
-            <input type="text" class="form-control" id="fiscal_zip" name="fiscal_zip">
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="requires_invoice" name="requires_invoice">
-            <label for="requires_invoice" class="form-check-label">Requiere Factura</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Notas -->
-    <div class="form-section">
-      <h3>Notas</h3>
-      <div class="form-row">
-        <div class="form-col">
-          <div class="form-group">
-            <label for="preferences" class="form-label">Preferencias</label>
-            <textarea class="form-control" id="preferences" name="preferences" rows="3"></textarea>
-          </div>
-        </div>
-        <div class="form-col">
-          <div class="form-group">
-            <label for="observations" class="form-label">Observaciones</label>
-            <textarea class="form-control" id="observations" name="observations" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botones -->
-    <div class="form-actions">
-      <div>
-        <button type="submit" class="btn btn-primary">Crear Cliente</button>
-        <a href="{{ url_for('clients.index') }}" class="btn">Cancelar</a>
-      </div>
-      <a href="{{ url_for('clients.index') }}" class="btn">Volver a la lista</a>
-    </div>
-  </form>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables
+        const form = document.getElementById('clientForm');
+        const inputs = form.querySelectorAll('input, textarea');
+        const tabs = document.querySelectorAll('.profile-tab');
+
+        // Gestión de pestañas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+                const tabId = `tab-${this.dataset.tab}`;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Validación al enviar el formulario
+        form.addEventListener('submit', function(e) {
+            let formIsValid = true;
+
+            // Validar cada entrada
+            inputs.forEach(input => {
+                if (!validateInput(input)) {
+                    formIsValid = false;
+                }
+            });
+
+            // Actualizar estado de las pestañas
+            actualizarErroresPestanas();
+
+            // Mostrar u ocultar mensaje general de error
+            const errorSummary = document.querySelector('.form-errors');
+            if (!formIsValid) {
+                e.preventDefault();
+                if (errorSummary) {
+                    errorSummary.textContent = 'Por favor, corrija los errores en las secciones resaltadas.';
+                    errorSummary.style.display = 'block';
+                    
+                    // Encontrar la primera pestaña con error y activarla
+                    const firstTabWithError = document.querySelector('.profile-tab.has-error');
+                    if (firstTabWithError) {
+                        firstTabWithError.click();
+                    }
+                }
+            } else {
+                if (errorSummary) {
+                    errorSummary.style.display = 'none';
+                }
+            }
+        });
+
+        // Validación en tiempo real
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                validateInput(this);
+                actualizarErroresPestanas();
+            });
+            
+            input.addEventListener('input', function() {
+                validateInput(this);
+            });
+        });
+
+        // Función para validar entradas
+        function validateInput(input) {
+            let isValid = true;
+            let message = '';
+
+            // Validación para campos requeridos
+            if (input.hasAttribute('required') && input.value.trim() === '') {
+                isValid = false;
+                message = 'Este campo es requerido';
+            }
+
+            // Validaciones específicas
+            if (isValid) {
+                switch (input.id) {
+                    case 'first_name':
+                    case 'last_name':
+                        if (input.value.length < 2) {
+                            isValid = false;
+                            message = 'Debe tener al menos 2 caracteres';
+                        }
+                        break;
+                    case 'email':
+                        if (input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+                            isValid = false;
+                            message = 'Correo electrónico inválido';
+                        }
+                        break;
+                    case 'phone_mobile':
+                        if (input.value && !/^\d{10}$/.test(input.value.replace(/\D/g, ''))) {
+                            isValid = false;
+                            message = 'Debe tener 10 dígitos';
+                        }
+                        break;
+                    case 'rfc':
+                        if (input.value && !/^[A-Z&Ñ]{3,4}\d{6}[A-Z\d]{3}$/.test(input.value)) {
+                            isValid = false;
+                            message = 'Formato de RFC inválido';
+                        }
+                        break;
+                }
+            }
+
+            // Actualizar UI según validación
+            const errorDiv = document.getElementById(`${input.id}-error`);
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                if (!isValid) {
+                    input.classList.add('error');
+                } else {
+                    input.classList.remove('error');
+                }
+            }
+
+            return isValid;
+        }
+
+        // Función para actualizar el estado de las pestañas
+        function actualizarErroresPestanas() {
+            tabs.forEach(tab => {
+                const tabId = `tab-${tab.dataset.tab}`;
+                const tabContent = document.getElementById(tabId);
+                const hasErrors = tabContent.querySelectorAll('.form-control.error').length > 0;
+                if (hasErrors) {
+                    tab.classList.add('has-error');
+                } else {
+                    tab.classList.remove('has-error');
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

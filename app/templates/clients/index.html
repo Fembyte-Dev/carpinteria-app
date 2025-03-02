@@ -25,8 +25,8 @@
 
     <div class="filter-options">
         <button class="filter-btn active" data-filter="all">Todos</button>
-        <button class="filter-btn" data-filter="active">Activos</button>
-        <button class="filter-btn" data-filter="inactive">Inactivos</button>
+        <!-- <button class="filter-btn" data-filter="active">Activos</button>  proximamente -->
+        <!-- <button class="filter-btn" data-filter="inactive">Inactivos</button> -->
         <button class="filter-btn" data-filter="invoice">Requieren Factura</button>
     </div>
 
@@ -36,9 +36,9 @@
                 <div class="client-card {% if not client.active %}inactive{% endif %}">
                     <div class="client-header">
                         <h2 class="client-name">{{ client.first_name }} {{ client.last_name }} {{ client.second_last_name or '' }}</h2>
-                        <span class="badge {% if client.active %}badge-success{% else %}badge-warning{% endif %}">
+                        <!-- <span class="badge {% if client.active %}badge-success{% else %}badge-warning{% endif %}">
                             {% if client.active %}Activo{% else %}Inactivo{% endif %}
-                        </span>
+                        </span> proximamente --> 
                         <div class="info-value">{{ client.fiscal_data.rfc or 'Sin RFC' }}</div>
                     </div>
                     <div class="client-body">
@@ -62,10 +62,13 @@
                         </div>
                     </div>
                     <div class="client-actions">
-                        <a href="{{ url_for('clients.view_client', client_id=client.id) }}" class="btn btn-success">Ver</a>
-                        <a href="{{ url_for('clients.edit_client_form', client_id=client.id) }}" class="btn">Editar</a>
+                        <a href="{{ url_for('clients.view_client', client_id=client.id) }}" class="btn btn-success">
+                            <i class="fas fa-eye"></i>
+                        </a>
                         <form action="{{ url_for('clients.delete_client', client_id=client.id) }}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -75,9 +78,7 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('search-input');
@@ -160,3 +161,4 @@
     });
 </script>
 {% endblock %}
+
