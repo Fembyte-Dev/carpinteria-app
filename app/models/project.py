@@ -12,13 +12,15 @@ class Cost(EmbeddedDocument):
     date = fields.DateTimeField()
 
 class Project(Document):
-    client_id = fields.ReferenceField(Client, required=True)
+    client = fields.ReferenceField(Client, required=True)
     name = fields.StringField(required=True)
     description = fields.StringField()
-    start_date = fields.DateTimeField()
-    estimated_end_date = fields.DateTimeField()
-    actual_end_date = fields.DateTimeField()
-    status = fields.StringField(choices=['in_progress', 'completed', 'cancelled'], default='in_progress')
+    start_date = fields.DateTimeField(required=True)
+    end_date = fields.DateTimeField(required=True)
+    estimated_cost = fields.FloatField(required=True)
+    status = fields.StringField(choices=['pending', 'in_progress', 'completed', 'cancelled'], default='pending')
     budget = fields.FloatField()
     advances = fields.EmbeddedDocumentListField(Advance)
     costs = fields.EmbeddedDocumentListField(Cost)
+    active = fields.BooleanField(default=True)  # Add this field
+    created_at = fields.DateTimeField(default=datetime.now)  # Add timestamp for creation date
