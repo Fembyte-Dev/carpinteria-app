@@ -61,7 +61,13 @@
                         <div class="client-info">
                             <div class="info-group">
                                 <span class="info-label">Cliente</span>
-                                <div class="info-value">{{ project.client or 'No asignado' }}</div>
+                                <div class="info-value">
+                                    {% if project.client %}
+                                      {{ [project.client.first_name, project.client.last_name]|join(' ')|trim or 'No asignado' }}
+                                    {% else %}
+                                      No asignado
+                                    {% endif %}
+                                </div>
                             </div>
                             <div class="info-group">
                                 <span class="info-label">Costo Estimado</span>
@@ -80,6 +86,9 @@
                     <div class="client-actions">
                         <a href="{{ url_for('projects.view_project', project_id=project.id) }}" class="btn btn-success">
                             <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('projects.edit_project_form', project_id=project.id) }}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
                         </a>
                         <form action="{{ url_for('projects.delete_project', project_id=project.id) }}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este proyecto?');">

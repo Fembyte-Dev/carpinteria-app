@@ -1,0 +1,402 @@
+.profile-container {
+        max-width: 1000px;
+        margin: 50px auto;
+    }
+
+    .profile-header {
+        position: relative;
+        background-color: var(--primary-color);
+        border-radius: 8px 8px 0 0;
+        overflow: hidden;
+        height: 120px;
+    }
+
+    .profile-header-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.2;
+        background-image: repeating-linear-gradient(45deg, var(--primary-dark) 0, var(--primary-dark) 10px, transparent 10px, transparent 20px);
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--white);
+        border: 4px solid var(--white);
+        position: relative;
+        top: 70px;
+        margin-left: 30px;
+        z-index: 10;
+    }
+
+    .profile-body {
+        background-color: var(--white);
+        border-radius: 0 0 8px 8px;
+        box-shadow: var(--box-shadow);
+        padding: 60px 30px 30px;
+        margin-top: -50px;
+    }
+
+    .info-item {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.info-label {
+    flex: 0 0 200px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.info-value {
+    flex: 1;
+    color: #34495e;
+}
+
+.currency {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-left: 5px;
+}
+
+.profile-name {
+    font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--primary-dark);
+        margin-bottom: 5px;
+    }
+
+    .profile-status {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    /* Pestañas de navegación */
+    .profile-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--gray);
+        margin-bottom: 20px;
+    }
+
+    .profile-tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--text-light);
+        border-bottom: 3px solid transparent;
+    }
+
+    .profile-tab.active {
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Tarjetas de información */
+    .info-card {
+        border: 1px solid var(--gray-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .info-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--gray-light);
+    }
+
+    .info-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .info-card-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary-light);
+        color: var(--white);
+        border-radius
+        : 50%;
+    }
+
+
+    .form-errors {
+        color: red;
+        font-weight: bold;
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid red;
+        background-color: #ffe6e6;
+    }
+
+    /* Estilos para formulario de anticipos */
+    .advance-form-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .advance-form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .advance-form-row {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Estilos para tabla de anticipos */
+    .advances-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .advances-table th,
+    .advances-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--gray-light);
+    }
+
+    .advances-table th {
+        background-color: var(--primary-light);
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .advances-table {
+            display: block;
+            overflow-x: auto;
+        }
+
+        .advance-form-container {
+            width: 95%;
+            padding: 1rem;
+        }
+    }
+    
+    /* Estilo para pestañas con errores */
+    .profile-tab.has-error {
+        color: red;
+        font-weight: bold;
+    }
+    
+    .profile-tab.has-error::after {
+        content: ' !';
+        color: red;
+    }
+
+    /* Componentes de la vista */
+    .info-item {
+        margin-bottom: 12px;
+        display: flex;
+    }
+
+    .info-label {
+        flex: 0 0 140px;
+        font-weight: 600;
+        color: var(--text-light);
+    }
+
+    .info-value {
+        flex: 1;
+        word-break: break-word;
+    }
+
+    /* Componentes de edición */
+    .edit-mode .info-value {
+        display: none;
+    }
+
+    .view-mode .form-group {
+        display: none;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -10px;
+    }
+
+    .form-col {
+        flex: 1 0 250px;
+        padding: 10px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--text-dark);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid var(--gray);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-control.error {
+        border-color: var(--danger-color);
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .form-check-input {
+        margin-right: 8px;
+    }
+
+    /* Botones */
+    .profile-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background-color: var(--gray-light);
+        color: var(--text-dark);
+        margin-right: 10px;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-secondary {
+        background-color: var(--gray);
+        color: var(--white);
+    }
+
+    .btn-success {
+        background-color: var(--success);
+        color: var(--white);
+    }
+
+    .btn-danger {
+        background-color: var(--danger-color);
+        color: var(--white);
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+
+    .edit-toggle {
+        cursor: pointer;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animated-fade {
+        animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .info-item {
+            flex-direction: column;
+        }
+        
+        .info-label {
+            flex: 0 0 100%;
+            margin-bottom: 5px;
+        }
+        
+        .form-row {
+            flex-direction: column;
+        }
+    }

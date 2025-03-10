@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/projects/view.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-header-pattern"></div>
+    </div>
+
+    <div class="profile-body">
+        <div class="profile-name">{{ project.name }}</div>
+
+
+        <div class="profile-tabs">
+            <div class="profile-tab active" data-tab="info">Información del Proyecto</div>
+            <div class="profile-tab" data-tab="advances">Anticipos</div>
+            <div class="profile-tab" data-tab="costs">Gastos</div>
+            <div class="profile-tab" data-tab="finish">Finalizar Proyecto</div>
+        </div>
+
+        <div class="tab-content active" id="tab-info">
+            <div class="profile-actions">
+                <a href="{{ url_for('projects.edit_project_form', project_id=project.id) }}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            </div>
+            <div class="info-card animated-fade">
+                <div class="info-card-header">
+                    <div class="info-card-title">
+                        <div class="info-card-icon"><i class="fas fa-info-circle"></i></div>
+                        Detalles del Proyecto
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Nombre del Proyecto:</div>
+                    <div class="info-value">{{ project.name }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Cliente:</div>
+                    <div class="info-value">{{ project.client.first_name }} {{ project.client.last_name }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Descripción:</div>
+                    <div class="info-value">{{ project.description }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Fecha Inicio:</div>
+                    <div class="info-value">{{ project.start_date.strftime('%d/%m/%Y') }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Fecha Finalización:</div>
+                    <div class="info-value">{{ project.end_date.strftime('%d/%m/%Y') }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Presupuesto Estimado:</div>
+                    <div class="info-value">${{ project.estimated_cost }} <span class="currency">{{ project.currency
+                            }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-advances">
+            <div class="info-card animated-fade">
+                <div class="advance-actions">
+                    <button class="btn btn-primary" onclick="toggleAdvanceForm()">
+                        <i class="fas fa-plus"></i> Nuevo Anticipo
+                    </button>
+                </div>
+
+                <div class="advances-table-container">
+                    <table class="advances-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Monto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Formulario Flotante -->
+                <div class="advance-form-overlay" id="advanceFormOverlay">
+                    <div class="advance-form-container">
+                        <h3>Nuevo Anticipo</h3>
+                        <form id="advanceForm">
+                            <div class="form-group">
+                                <label class="form-label">Fecha:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Concepto:</label>
+                                <textarea class="form-control" rows="3" required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Monto:</label>
+                                <input type="number" class="form-control" step="0.01" required>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="toggleAdvanceForm()">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-costs">
+            <div class="info-card animated-fade">
+                <div class="construction-message">
+                    <i class="fas fa-tools"></i>
+                    <h3>Esta sección está en construcción</h3>
+                    <p>Próximamente disponible</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-finish">
+            <div class="info-card animated-fade">
+                <div class="construction-message">
+                    <i class="fas fa-tools"></i>
+                    <h3>Esta sección está en construcción</h3>
+                    <p>Próximamente disponible</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('.profile-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                this.classList.add('active');
+                const tabId = `tab-${this.dataset.tab}`;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    });
+
+    function toggleAdvanceForm() {
+        const overlay = document.getElementById('advanceFormOverlay');
+        overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    async function loadAdvances() {
+        try {
+            const tbody = document.querySelector('.advances-table tbody');
+            tbody.innerHTML = '<tr><td colspan="4" class="loading">Cargando...</td></tr>';
+
+            const response = await fetch(`/projects/{{ project.id }}/advances`);
+            const data = await response.json();
+
+            tbody.innerHTML = '';
+
+            if (!data.advances || data.advances.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">No hay anticipos registrados</td></tr>';
+                return;
+            }
+
+            const rows = data.advances.map(advance => {
+                const date = new Date(advance.date.$date);
+                return `
+                <tr data-id="${advance.id.$oid}">
+                    <td>${date.toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
+                    <td>${advance.concept}</td>
+                    <td>$${parseFloat(advance.amount).toFixed(2)}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary btn-edit" data-id="${advance.id.$oid}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-delete" data-id="${advance.id.$oid}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+        } catch (error) {
+            console.error('Error loading advances:', error);
+            tbody.innerHTML = '<tr><td colspan="4">Error al cargar los datos</td></tr>';
+        }
+    }
+
+    // Carga inicial de anticipos
+    loadAdvances();
+
+    // Manejo de eventos delegados para botones dinámicos
+    document.querySelector('.advances-table tbody').addEventListener('click', async (e) => {
+        const row = e.target.closest('tr');
+        const advanceId = row?.dataset.id;
+
+        if (!advanceId) return;
+
+        if (e.target.closest('.btn-edit')) {
+            try {
+                const response = await fetch(`/projects/{{ project.id }}/advances/${advanceId}`);
+                const advance = await response.json();
+
+                const form = document.getElementById('advanceForm');
+                let date;
+                
+                // Manejar diferentes formatos de fecha que pueden venir del servidor
+                if (advance.date.$date) {
+                    // Formato MongoDB con $date
+                    date = new Date(advance.date.$date);
+                } else if (typeof advance.date === 'string') {
+                    // Formato string directo
+                    date = new Date(advance.date);
+                } else {
+                    // Otros formatos posibles
+                    date = new Date();
+                }
+                
+                // Formatear la fecha para el input date (YYYY-MM-DD)
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                form.querySelector('[type="date"]').value = `${year}-${month}-${day}`;
+                form.querySelector('textarea').value = advance.concept;
+                form.querySelector('[type="number"]').value = advance.amount.toFixed(2);
+                form.dataset.editId = advanceId;
+                toggleAdvanceForm();
+            } catch (error) {
+                console.error('Error al obtener anticipo:', error);
+                alert('Error al cargar datos del anticipo');
+            }
+        }
+
+        if (e.target.closest('.btn-delete')) {
+            if (confirm('¿Eliminar este anticipo?')) {
+                try {
+                    const response = await fetch(`/projects/{{ project.id }}/advances/${advanceId}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) throw new Error(await response.text());
+                    loadAdvances();
+                } catch (error) {
+                    console.error('Error al eliminar:', error);
+                    alert('Error al eliminar anticipo');
+                }
+            }
+        }
+    });
+
+    // Único manejador de formulario para creación/edición
+    const advanceForm = document.getElementById('advanceForm');
+    advanceForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // Validación de fecha futura
+        const selectedDate = new Date(this.querySelector('[type="date"]').value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate > today) {
+            alert('No se permiten fechas futuras');
+            return;
+        }
+
+        // Validación de monto
+        const amountInput = this.querySelector('[type="number"]');
+        const amount = parseFloat(amountInput.value);
+        if (isNaN(amount) || amount <= 0) {
+            alert('Monto inválido');
+            return;
+        }
+
+        const method = this.dataset.editId ? 'PUT' : 'POST';
+        const url = this.dataset.editId
+            ? `/projects/{{ project.id }}/advances/${this.dataset.editId}`
+            : `/projects/{{ project.id }}/advances`;
+
+        const formData = {
+            date: this.querySelector('[type="date"]').value, // Ya está en YYYY-MM-DD
+            concept: this.querySelector('textarea').value,
+            amount: amount // Enviar como número
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            toggleAdvanceForm();
+            loadAdvances();
+            this.reset();
+            delete this.dataset.editId;
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al guardar el anticipo');
+        }
+    });
+    // Cerrar con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.getElementById('advanceFormOverlay').style.display = 'none';
+            document.getElementById('advanceForm').reset();
+        }
+    });
+</script>
+
+
+{% endblock %}

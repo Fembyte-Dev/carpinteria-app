@@ -1,15 +1,19 @@
 from datetime import datetime
+import re
 from mongoengine import Document, EmbeddedDocument, fields
 from app.models.client import Client
 
 class Advance(EmbeddedDocument):
-    amount = fields.FloatField()
-    date = fields.DateTimeField()
+    id = fields.ObjectIdField()
+    concept = fields.StringField(required=True)
+    amount = fields.FloatField(required=True)
+    date = fields.DateTimeField(required=True)
 
 class Cost(EmbeddedDocument):
-    amount = fields.FloatField()
-    description = fields.StringField()
-    date = fields.DateTimeField()
+    id = fields.ObjectIdField()
+    amount = fields.FloatField(required=True)
+    description = fields.StringField(required=True)
+    date = fields.DateTimeField(required=True)
 
 class Project(Document):
     client = fields.ReferenceField(Client, required=True)
@@ -22,5 +26,5 @@ class Project(Document):
     budget = fields.FloatField()
     advances = fields.EmbeddedDocumentListField(Advance)
     costs = fields.EmbeddedDocumentListField(Cost)
-    active = fields.BooleanField(default=True)  # Add this field
-    created_at = fields.DateTimeField(default=datetime.now)  # Add timestamp for creation date
+    active = fields.BooleanField(default=True)  
+    created_at = fields.DateTimeField(default=datetime.now)  

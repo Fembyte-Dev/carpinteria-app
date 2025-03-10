@@ -112,8 +112,8 @@
                     <div class="info-item">
                         <div class="info-label">Presupuesto Estimado:</div>
                         <div class="form-group">
-                            <input type="number" class="form-control" id="budget" name="budget" step="0.01">
-                            <div class="error-message" id="budget-error"></div>
+                            <input type="number" class="form-control" id="estimated_cost" name="estimated_cost" step="0.01">
+                            <div class="error-message" id="estimated_cost-error"></div>
                         </div>
                     </div>
                     
@@ -227,7 +227,7 @@
                 message = 'Este campo es requerido';
             }
 
-            if (input.id === 'budget' && input.value && parseFloat(input.value) <= 0) {
+            if (input.id === 'estimated_cost' && input.value && parseFloat(input.value) <= 0) {
                 isValid = false;
                 message = 'El presupuesto debe ser mayor a cero';
             }

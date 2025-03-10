@@ -22,7 +22,8 @@ def create_app():
         host=app.config['MONGO_URI']
     )
 
-    # Importa los Blueprints desde los módulos correspondientes
+
+    from app.models.user import User
     from .routes.auth import auth_bp  # Rutas relacionadas con autenticación
     from .routes.clients import clients_bp  # Rutas relacionadas con clientes
     from .routes.projects import projects_bp  # Rutas relacionadas con proyectos
@@ -43,7 +44,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.objects(id=user_id).first()
+        return User.objects(id=ObjectId(user_id)).first()
 
     return app  # Retorna la aplicación configurada
 
