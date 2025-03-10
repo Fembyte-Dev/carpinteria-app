@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, Response
 from flask_login import login_required
-from app.models.project import Project, Advance
+from app.models.project import Project, Advance, Cost
 from app.models.client import Client
 from datetime import datetime
 from bson import ObjectId, json_util
@@ -261,6 +261,156 @@ def delete_advance(project_id, advance_id):
         if result == 0:
             return {'error': 'Advance not found'}, 404
         return {'message': 'Advance deleted successfully'}, 200
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+@projects_bp.route('/projects/<project_id>/costs', methods=['GET'])
+@login_required
+def get_costs(project_id):
+    """Get all costs for a project"""
+    project = Project.objects(id=project_id, active=True).first()
+
+    if not project:
+        return Response(
+            json_util.dumps({'error': 'Project not found'}),
+            status=404,
+            mimetype='application/json'
+        )
+
+    costs_list = [cost.to_mongo() for cost in project.costs]
+    data = json_util.dumps({'costs': costs_list}, default=json_util.default)
+    return Response(data, mimetype='application/json')
+
+@projects_bp.route('/projects/<project_id>/costs/<cost_id>', methods=['GET'])
+@login_required
+def get_cost(project_id, cost_id):
+    """Get a single cost by ID"""
+    project = Project.objects(id=project_id, active=True).first()
+    if not project:
+        return {'error': 'Project not found'}, 404
+
+    cost = next((c for c in project.costs if str(c.id) == cost_id), None)
+    if not cost:
+        return {'error': 'Cost not found'}, 404
+    
+    data = json_util.dumps(cost.to_mongo(), default=json_util.default)
+    return Response(data, mimetype='application/json')
+
+@projects_bp.route('/projects/<project_id>/costs', methods=['POST'])
+@login_required
+def add_cost(project_id):
+    """Add a new cost to a project"""
+    if not ObjectId.is_valid(project_id):
+        return {'error': 'ID de proyecto inválido'}, 400
+
+    data = request.get_json()
+    print(data)
+    required = ['description', 'amount', 'date', 'iva', 'tasa']
+    print(required)
+    
+    if not all(field in data for field in required):
+        return {'error': 'Faltan campos obligatorios'}, 400
+    try:
+        print(data)
+        amount = float(data['amount'])
+        print(amount)
+        if amount <= 0:
+            print(amount)
+            return {'error': 'Monto inválido'}, 400
+            
+        date = datetime.strptime(data['date'], '%Y-%m-%d')
+        if date > datetime.now():
+            print(date)
+            return {'error': 'Fecha futura no permitida'}, 400
+            
+        project = Project.objects(id=project_id, active=True).first()
+        if not project:
+            print(project)
+            return {'error': 'Proyecto no encontrado'}, 404
+            
+        iva = 0
+        tasa = 'none'
+        
+        if 'iva' in data:
+            iva = float(data['iva'])
+        
+        if 'tasa' in data:
+            tasa = data['tasa']
+            
+        cost = Cost(
+            id=ObjectId(),
+            description=data['description'],
+            amount=amount,
+            date=date,
+            iva=iva,
+            tasa=tasa
+        )
+        project.costs.append(cost)
+        project.save()
+        
+        return {'message': 'Costo agregado'}, 201
+    except ValueError:
+        return {'error': 'Formato de fecha o monto incorrecto'}, 400
+    except Exception as e:
+        return {'error': f'Error inesperado: {str(e)}'}, 500
+
+@projects_bp.route('/projects/<project_id>/costs/<cost_id>', methods=['PUT'])
+@login_required
+def update_cost(project_id, cost_id):
+    """Update an existing cost"""
+    data = request.get_json()
+    if not data or 'amount' not in data or 'date' not in data or 'description' not in data:
+        return {'error': 'Missing required fields'}, 400
+
+    try:
+        # First check if the project and cost exist
+        project = Project.objects(id=project_id, active=True).first()
+        if not project:
+            return {'error': 'Project not found'}, 404
+            
+        # Find the cost in the project's costs list
+        cost = next((c for c in project.costs if str(c.id) == cost_id), None)
+        if not cost:
+            return {'error': 'Cost not found'}, 404
+            
+        # Manejar los campos de IVA y tasa
+        iva = 0
+        tasa = 'none'
+        
+        if 'iva' in data:
+            iva = float(data['iva'])
+        
+        if 'tasa' in data:
+            tasa = data['tasa']
+            
+        # Update the cost directly
+        update_data = {
+            f'set__costs__S__amount': float(data['amount']),
+            f'set__costs__S__date': datetime.strptime(data['date'], '%Y-%m-%d'),
+            f'set__costs__S__description': data['description'],
+            f'set__costs__S__iva': iva,
+            f'set__costs__S__tasa': tasa
+        }
+        
+        # Use the positional operator $ to update the matched element
+        Project.objects(id=project_id, costs__id=cost_id).update_one(
+            **{k.replace('S', '$'): v for k, v in update_data.items()}
+        )
+        
+        return {'message': 'Cost updated successfully'}, 200
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+@projects_bp.route('/projects/<project_id>/costs/<cost_id>', methods=['DELETE'])
+@login_required
+def delete_cost(project_id, cost_id):
+    """Delete a cost from a project"""
+    try:
+        print(f"Deleting cost {cost_id} from project {project_id}")
+        result = Project.objects(id=project_id).update_one(pull__costs__id=cost_id)
+        if result == 0:
+            return {'error': 'Cost not found'}, 404
+        return {'message': 'Cost deleted successfully'}, 200
     except Exception as e:
         return {'error': str(e)}, 400
 

@@ -193,20 +193,24 @@
     }
 
     /* Estilos para tabla de anticipos */
-    .advances-table {
+    .advances-table,
+    .costs-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 1rem;
     }
 
     .advances-table th,
-    .advances-table td {
+    .advances-table td,
+    .costs-table th,
+    .costs-table td {
         padding: 0.75rem;
         text-align: left;
         border-bottom: 1px solid var(--gray-light);
     }
 
-    .advances-table th {
+    .advances-table th,
+    .costs-table th {
         background-color: var(--primary-light);
         color: white;
     }
@@ -217,7 +221,8 @@
     }
 
     @media (max-width: 768px) {
-        .advances-table {
+        .advances-table,
+        .costs-table {
             display: block;
             overflow-x: auto;
         }
@@ -399,4 +404,49 @@
         .form-row {
             flex-direction: column;
         }
+    }
+
+    /* Estilos para el resumen financiero */
+    .advance-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .financial-summary {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .summary-item {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--gray-light);
+        margin-top: 10px;
+        padding: 10px 15px;
+        border-radius: 6px;
+        border-left: 3px solid var(--primary-color);
+    }
+    
+    .summary-label {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+    
+    .summary-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    
+    #total-advances,
+    #total-costs {
+        color: var(--danger-color);
+    }
+    
+    #remaining-balance,
+    #remaining-budget {
+        color: var(--success-color);
     }

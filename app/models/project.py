@@ -12,6 +12,8 @@ class Advance(EmbeddedDocument):
 class Cost(EmbeddedDocument):
     id = fields.ObjectIdField()
     amount = fields.FloatField(required=True)
+    iva = fields.FloatField(default=0)
+    tasa = fields.StringField(default='none')
     description = fields.StringField(required=True)
     date = fields.DateTimeField(required=True)
 
@@ -27,4 +29,4 @@ class Project(Document):
     advances = fields.EmbeddedDocumentListField(Advance)
     costs = fields.EmbeddedDocumentListField(Cost)
     active = fields.BooleanField(default=True)  
-    created_at = fields.DateTimeField(default=datetime.now)  
+    created_at = fields.DateTimeField(default=datetime.now)
